@@ -24,5 +24,5 @@ def send_i2c(data):
     bus.write_i2c_block_data(address, cmd, val)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug=True)
 
