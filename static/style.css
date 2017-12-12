@@ -57,6 +57,10 @@ div.main {
     visibility: hidden
 }
 
+#keyboard {
+    margin-top: 10px;
+}
+
 button:focus {
     outline: 0;
 }
