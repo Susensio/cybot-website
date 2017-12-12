@@ -1,17 +1,26 @@
 <!doctype html>
+
 <head>
     <title>{{ title }}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
 </head>
+
 <body>
     <div class="main" id="panel">
         <img id="logo" src="{{ url_for('static', filename='cybot.gif') }}"></img>
         <h1 id="title">{{ title }}</h1>
+        <div id="buttonpad">
+            <button class="arrow" id="up">↑</button>
+            <br>
+            <button class="arrow" id="left">←</button>
+            <button class="arrow" id="down">↓</button>
+            <button class="arrow" id="right">→</button>
+        </div>
     </div>
     <div class="main" id="streaming">
         <img src="http://susensio.ddns.net:8081">
     </div>
 </body>
-
 <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
