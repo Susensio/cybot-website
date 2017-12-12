@@ -1,13 +1,15 @@
 keyMap = {
-    ledLeft: 46,   // Del
-    ledRight: 34,  // Av pag
-    up: 38,        // up arrow
-    down: 40,      // down arrow
-    left: 37,      // left arrow
-    right: 39,     // right arrow
-    turbo: 16,     // shift
-    slow: 17,      // ctrl
+    ledLeft: 46, // Del
+    ledRight: 34, // Av pag
+    up: 38, // up arrow
+    down: 40, // down arrow
+    left: 37, // left arrow
+    right: 39, // right arrow
+    turbo: 16, // shift
+    slow: 17, // ctrl
 }
+
+var speed = 3;
 
 $(document).ready(function() {
     $(document).keydown(function(event) {
@@ -34,25 +36,27 @@ function sendData(data) {
     })
 };
 
-function encodeEvent(keyCode,pressed) {
-    var command = "";
-    if (keyCode == keyMap['ledLeft'] || keyCode == keyMap['ledRight']){  // LEDs
-        command += "L"
+function encodeEvent(keyCode, pressed) {
+    if (keyCode == keyMap['ledLeft'] || keyCode == keyMap['ledRight']) { // LEDs
+        var command = "L";
+        if (keyCode == keyMap['ledLeft'])
+            command += pressed ? 1 : 0;
+        if (keyCode == keyMap['ledRight'])
+            command += pressed ? 3 : 2;
+        sendData(command);
+    }
+
+    if (keyCode == keyMap['turbo'])
+        speed = pressed ? 5 : 3;
+
+    if (keyCode == keyMap['slow'])
+        speed = pressed ? 1 : 3;
+
+    if (keyCode == keyMap['up'] ||
+        keyCode == keyMap['down'] ||
+        keyCode == keyMap['left'] ||
+        keyCode == keyMap['right']) {
+        var command = "M";
 
     }
 }
-
-            if (event.keyCode == 103) { // numpad 7
-                sendData("L1");
-            }
-            if (event.keyCode == 105) { // numpad 9
-                sendData("L3");
-            }
-
-
-        if (event.keyCode == 103) { // numpad 7
-            sendData("L0");
-        }
-        if (event.keyCode == 105) { // numpad 9
-            sendData("L2");
-        }
