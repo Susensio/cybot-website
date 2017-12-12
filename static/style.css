@@ -6,22 +6,55 @@ div.main {
     vertical-align: top;
 }
 
-#buttonpad {
+#modifier_keys {
+    text-align: right;
+    margin-right: 20px;
+    vertical-align: bottom;
+}
+
+#arrow_keys {
     text-align: center;
+}
+
+.key {
+    border-radius: 6px;
+    margin-bottom: 4px;
+    text-align: left;
+    padding-left: 10px;
+    height: 80px;
+}
+
+.key:active {
+    background: #afafaf;
 }
 
 .arrow {
     font-size: 40px;
-    height: 80px;
     width: 80px;
-    border-radius: 4px;
-    margin-bottom: 4px;
-    text-align: left;
-    padding-left: 10px;
 }
 
-.arrow:active {
-    background: #afafaf;
+.modifier {
+    font-size: 30px;
+    text-align: left;
+    padding-right: 50px;
+}
+
+.keys {
+    display: inline-block;
+    vertical-align: bottom
+}
+
+.led {
+    width: 80px;
+    font-size: 30px;
+}
+
+#leds {
+    margin-bottom: 40px;
+}
+
+#led_center {
+    visibility: hidden
 }
 
 button:focus {
