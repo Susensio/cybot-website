@@ -37,26 +37,32 @@ function sendData(data) {
 };
 
 function encodeEvent(keyCode, pressed) {
+
+    // La traduccion a comandos deberia hacerse en python, aqui le mando info a maás alto nivel
+    var command;
     if (keyCode == keyMap['ledLeft'] || keyCode == keyMap['ledRight']) { // LEDs
-        var command = "L";
+        command = "L";
         if (keyCode == keyMap['ledLeft'])
             command += pressed ? 1 : 0;
         if (keyCode == keyMap['ledRight'])
             command += pressed ? 3 : 2;
-        sendData(command);
+    } else {
+        command = "M";
+        var v = 0;
+        var w = 0;
+        if (keyCode == keyMap['up']){
+            v += pressed ? 100 : -100;
+        }
+        if (keyCode == keyMap['down']){
+            v += pressed ? -100 : 100;
+        }
+        if (keyCode == keyMap['right']){
+            v += pressed ? 100 : -100;
+        }
+        if (keyCode == keyMap['left']){
+            v += pressed ? -100 : 100;
+        }
     }
-
-    if (keyCode == keyMap['turbo'])
-        speed = pressed ? 5 : 3;
-
-    if (keyCode == keyMap['slow'])
-        speed = pressed ? 1 : 3;
-
-    if (keyCode == keyMap['up'] ||
-        keyCode == keyMap['down'] ||
-        keyCode == keyMap['left'] ||
-        keyCode == keyMap['right']) {
-        var command = "M";
-
-    }
+    
+    sendData(command);
 }
