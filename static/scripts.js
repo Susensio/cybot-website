@@ -41,10 +41,12 @@ $(document).ready(function() {
 
 
 let leds = {
+    type: 'led',
     left: false,
     right: false
 };
 let velocity = {
+    type: 'velocity',
     linear: 0,
     angular: 0,
     modifier: 1
@@ -57,19 +59,21 @@ function encodeEvent(keyCode, pressed) {
     if (Object.values(KEYMAP).indexOf(keyCode) > -1) {
 
         // LEDs
-        if (keyCode == KEYMAP.ledLeft || keyCode == KEYMAP.ledRight) {
+        if (keyCode == KEYMAP.ledLeft || 
+            keyCode == KEYMAP.ledRight ||
+            keyCode == KEYMAP.ledBoth) {
             if (keyCode == KEYMAP.ledRight) {
-                leds.left = pressed;
+                leds.right = pressed;
             }
             if (keyCode == KEYMAP.ledBoth) {
                 leds.left = pressed;
                 leds.right = pressed;
             }
             if (keyCode == KEYMAP.ledLeft) {
-                leds.right = pressed;
+                leds.left = pressed;
             }
 
-            sendData({type: "leds", leds});
+            sendData(leds);
         }
         // Movement
         else {
@@ -95,7 +99,7 @@ function encodeEvent(keyCode, pressed) {
                 velocity.angular = pressed ? -ANGULAR_BASE : 0;
             }
 
-            sendData({type: "velocity", velocity});
+            sendData(velocity);
         }
     }
 };

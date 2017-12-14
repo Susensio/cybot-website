@@ -21,7 +21,8 @@ def index():
 def send():
     if request.method == 'PUT':
         body = request.get_json()
-        send_i2c(encode(body))
+        app.logger.debug(body)
+        send_i2c(*encode(body))
         return "Done"
 
 
@@ -29,10 +30,11 @@ def encode(data):
     # LEDs encoded in two bits: bx00
     if data['type'] == 'led':
         cmd = "L"
-        val = [data['left'] << 1 + data['right']]
+        val = [(data['left'] << 1) + data['right']]
+        app.logger.debug(val)
 
     elif data['type'] == 'velocity':
-        raw = "M"
+        cmd = "M"
         modifier = data['modifier']
         linear = modifier * data['linear'] * LINEAR_MAX
         angular = modifier * data['angular'] * ANGULAR_MAX
@@ -47,6 +49,7 @@ def send_i2c(cmd, val):
 
 def split_int(num):
     '''Returns 2 bytes'''
+    num = int(num)
     assert (-2**15 <= num <= 2**15 - 1)
     return num >> 8, num & 255
 
