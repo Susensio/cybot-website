@@ -16,15 +16,22 @@ const KEY_MAP = {
     slow: 17, // ctrl
 }
 
+var allowed = true;
+
 $(document).ready(function() {
     $(document).keydown(function(event) {
-        if (!event.repeat) {
-            encodeEvent(event.keyCode, true);
+        if (event.repeat != undefined) {
+            allowed = !event.repeat;
         }
+        if (!allowed) return;
+        allowed = false;
+        console.log(event.repeat);
+        encodeEvent(event.keyCode, true);
     });
 
     $(document).keyup(function(event) {
-        if (!event.repeat) {
+        allowed = true;
+        if (!(event.repeat)) {
             encodeEvent(event.keyCode, false);
         }
     });
