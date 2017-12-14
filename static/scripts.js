@@ -3,8 +3,8 @@ const TURBO = 2;
 const SLOW = 0.2;
 
 
-const LINEAR_BASE = 1 / TURBO;
-const ANGULAR_BASE = 1 / TURBO;
+const LINEAR_BASE = 1000 / TURBO;
+const ANGULAR_BASE = 1000 / TURBO;
 
 
 const KEYMAP = {
