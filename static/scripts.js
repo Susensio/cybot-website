@@ -46,13 +46,13 @@ const ANGULAR_BASE = ANGULAR_MAX / TURBO;
 
 
 function encodeEvent(keyCode, pressed) {
-    if (keyCode in Object.values(KEY_MAP)) {
+    if (Object.values(KEY_MAP).indexOf(keyCode) > -1) {
 
         if (keyCode == KEY_MAP.ledLeft || keyCode == KEY_MAP.ledRight) { // LEDs
             if (keyCode == KEY_MAP.ledRight)
-                led.left = pressed;
+                leds.left = pressed;
             if (keyCode == KEY_MAP.ledLeft)
-                led.right = pressed;
+                leds.right = pressed;
 
             sendData(leds);
 
