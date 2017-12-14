@@ -1,11 +1,13 @@
-// Parameters
-const LINEAR_MAX = 15;
-const ANGULAR_MAX = 5;
+////// PARAMETERS ////////
 const TURBO = 2;
 const SLOW = 0.2;
 
 
-const KEY_MAP = {
+const LINEAR_BASE = 1 / TURBO;
+const ANGULAR_BASE = 1 / TURBO;
+
+
+const KEYMAP = {
     ledLeft: 46, // Del
     ledBoth: 35, // End
     ledRight: 34, // Av pag
@@ -14,96 +16,95 @@ const KEY_MAP = {
     left: 37, // left arrow
     right: 39, // right arrow
     turbo: 16, // shift
-    slow: 17, // ctrl
-}
+    slow: 17 // ctrl
+};
 
-var allowed = true;
 
+// Keyboard and mouse controls
 $(document).ready(function() {
     $(document).keydown(function(event) {
-        if (event.repeat != undefined) {
-            allowed = !event.repeat;
+        if (!event.originalEvent.repeat) {
+            encodeEvent(event.keyCode, true);
         }
-        if (!allowed) return;
-        allowed = false;
-        console.log(event.repeat);
-        encodeEvent(event.keyCode, true);
     });
-
     $(document).keyup(function(event) {
-        allowed = true;
-        if (!(event.repeat)) {
-            encodeEvent(event.keyCode, false);
-        }
+        encodeEvent(event.keyCode, false);
     });
 
-    $("button.key").mousedown(function (event) {
-        encodeEvent(KEY_MAP[this.id],true);
-        console.log(KEY_MAP[this.id]);
-        console.log(event);
-    })
-    $("button.key").mouseup(function (event) {
-        encodeEvent(KEY_MAP[this.id],false);
-        console.log(KEY_MAP[this.id]);
-        console.log(event);
-    })
+    $("button.key").mousedown(function(event) {
+        encodeEvent(KEYMAP[this.id], true);
+    });
+    $("button.key").mouseup(function(event) {
+        encodeEvent(KEYMAP[this.id], false);
+    });
 });
 
 
 let leds = {
     left: false,
     right: false
-}
+};
 let velocity = {
     linear: 0,
     angular: 0,
     modifier: 1
-}
+};
 
-const LINEAR_BASE = LINEAR_MAX / TURBO;
-const ANGULAR_BASE = ANGULAR_MAX / TURBO;
 
 
 function encodeEvent(keyCode, pressed) {
-    if (Object.values(KEY_MAP).indexOf(keyCode) > -1) {
+    // If pressed key is in KEYMAP
+    if (Object.values(KEYMAP).indexOf(keyCode) > -1) {
 
-        if (keyCode == KEY_MAP.ledLeft || keyCode == KEY_MAP.ledRight) { // LEDs
-            if (keyCode == KEY_MAP.ledRight)
+        // LEDs
+        if (keyCode == KEYMAP.ledLeft || keyCode == KEYMAP.ledRight) {
+            if (keyCode == KEYMAP.ledRight) {
                 leds.left = pressed;
-            if (keyCode == KEY_MAP.ledLeft)
+            }
+            if (keyCode == KEYMAP.ledBoth) {
+                leds.left = pressed;
                 leds.right = pressed;
+            }
+            if (keyCode == KEYMAP.ledLeft) {
+                leds.right = pressed;
+            }
 
-            sendData(leds);
-
-        } else { // Movement
-            if (keyCode == KEY_MAP.turbo) {
+            sendData({type: "leds", leds});
+        }
+        // Movement
+        else {
+            if (keyCode == KEYMAP.turbo) {
                 velocity.modifier = pressed ? TURBO : 1;
             }
-            if (keyCode == KEY_MAP.slow) {
+            if (keyCode == KEYMAP.slow) {
                 velocity.modifier = pressed ? SLOW : 1;
             }
-            if (keyCode == KEY_MAP.up)
+            if (keyCode == KEYMAP.up) {
                 velocity.linear = pressed ? LINEAR_BASE : 0;
+            }
 
-            if (keyCode == KEY_MAP.down)
+            if (keyCode == KEYMAP.down) {
                 velocity.linear = pressed ? -LINEAR_BASE : 0;
+            }
 
-            if (keyCode == KEY_MAP.left)
+            if (keyCode == KEYMAP.left) {
                 velocity.angular = pressed ? ANGULAR_BASE : 0;
+            }
 
-            if (keyCode == KEY_MAP.right)
+            if (keyCode == KEYMAP.right) {
                 velocity.angular = pressed ? -ANGULAR_BASE : 0;
+            }
 
-            sendData(velocity);
+            sendData({type: "velocity", velocity});
         }
     }
-}
+};
 
 function sendData(data) {
     $.ajax({
-        type: "POST",
+        type: "PUT",
         url: "/send",
-        contentType: 'application/json',
+        contentType: "application/json",
         data: JSON.stringify(data)
-    })
+    });
 };
