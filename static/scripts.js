@@ -1,4 +1,11 @@
-keyMap = {
+// Parameters
+const LINEAR_MAX = 15;
+const ANGULAR_MAX = 5;
+const TURBO = 2;
+const SLOW = 0.2;
+
+
+const KEY_MAP = {
     ledLeft: 46, // Del
     ledRight: 34, // Av pag
     up: 38, // up arrow
@@ -8,8 +15,6 @@ keyMap = {
     turbo: 16, // shift
     slow: 17, // ctrl
 }
-
-var speed = 3;
 
 $(document).ready(function() {
     $(document).keydown(function(event) {
@@ -25,44 +30,61 @@ $(document).ready(function() {
     });
 });
 
+
+let leds = {
+    left: false,
+    right: false
+}
+let velocity = {
+    linear: 0,
+    angular: 0,
+    modifier: 1
+}
+
+const LINEAR_BASE = LINEAR_MAX / TURBO;
+const ANGULAR_BASE = ANGULAR_MAX / TURBO;
+
+
+function encodeEvent(keyCode, pressed) {
+    if (keyCode in Object.values(KEY_MAP)) {
+
+        if (keyCode == KEY_MAP.ledLeft || keyCode == KEY_MAP.ledRight) { // LEDs
+            if (keyCode == KEY_MAP.ledRight)
+                led.left = pressed;
+            if (keyCode == KEY_MAP.ledLeft)
+                led.right = pressed;
+
+            sendData(leds);
+
+        } else { // Movement
+            if (keyCode == KEY_MAP.turbo) {
+                velocity.modifier = pressed ? TURBO : 1;
+            }
+            if (keyCode == KEY_MAP.slow) {
+                velocity.modifier = pressed ? SLOW : 1;
+            }
+            if (keyCode == KEY_MAP.up)
+                velocity.linear = pressed ? LINEAR_BASE : 0;
+
+            if (keyCode == KEY_MAP.down)
+                velocity.linear = pressed ? -LINEAR_BASE : 0;
+
+            if (keyCode == KEY_MAP.left)
+                velocity.angular = pressed ? ANGULAR_BASE : 0;
+
+            if (keyCode == KEY_MAP.right)
+                velocity.angular = pressed ? -ANGULAR_BASE : 0;
+
+            sendData(velocity);
+        }
+    }
+}
+
 function sendData(data) {
     $.ajax({
         type: "POST",
         url: "/send",
         contentType: 'application/json',
-        data: JSON.stringify({
-            "command": data
-        })
+        data: JSON.stringify(data)
     })
 };
-
-function encodeEvent(keyCode, pressed) {
-
-    // La traduccion a comandos deberia hacerse en python, aqui le mando info a maás alto nivel
-    var command;
-    if (keyCode == keyMap['ledLeft'] || keyCode == keyMap['ledRight']) { // LEDs
-        command = "L";
-        if (keyCode == keyMap['ledLeft'])
-            command += pressed ? 1 : 0;
-        if (keyCode == keyMap['ledRight'])
-            command += pressed ? 3 : 2;
-    } else {
-        command = "M";
-        var v = 0;
-        var w = 0;
-        if (keyCode == keyMap['up']){
-            v += pressed ? 100 : -100;
-        }
-        if (keyCode == keyMap['down']){
-            v += pressed ? -100 : 100;
-        }
-        if (keyCode == keyMap['right']){
-            v += pressed ? 100 : -100;
-        }
-        if (keyCode == keyMap['left']){
-            v += pressed ? -100 : 100;
-        }
-    }
-    
-    sendData(command);
-}

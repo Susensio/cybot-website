@@ -3,12 +3,12 @@
 <head>
   <title>{{ title }}</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" type="text/css" href="../static/style.css">
 </head>
 
 <body>
   <div class="main" id="panel">
-    <img id="logo" src="{{ url_for('static', filename='cybot.gif') }}"></img>
+    <img id="logo" src="../static/cybot.gif"></img>
     <div id="keyboard">
       <div class="keys" id=modifier_keys>
         <button class="modifier key" id="shift">Turbo</button>
@@ -36,4 +36,4 @@
     <img src="http://susensio.ddns.net:8081">
   </div>
 </body>
-<script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
+<script type="text/javascript" src="../static/scripts.js"></script>

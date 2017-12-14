@@ -11,8 +11,9 @@ def index():
 @app.route('/send', methods=['POST'])
 def send():
     if request.method == 'POST':
-        app.logger.debug(request.get_json()["command"])
-        send_i2c(request.get_json()["command"])
+        post = request.get_json();
+        app.logger.debug(post)
+        # send_i2c(request.get_json()["command"])
         return "Done"
 
 bus = SMBus(1)
