@@ -7,6 +7,7 @@ const SLOW = 0.2;
 
 const KEY_MAP = {
     ledLeft: 46, // Del
+    ledBoth: 35, // End
     ledRight: 34, // Av pag
     up: 38, // up arrow
     down: 40, // down arrow
@@ -35,6 +36,17 @@ $(document).ready(function() {
             encodeEvent(event.keyCode, false);
         }
     });
+
+    $("button.key").mousedown(function (event) {
+        encodeEvent(KEY_MAP[this.id],true);
+        console.log(KEY_MAP[this.id]);
+        console.log(event);
+    })
+    $("button.key").mouseup(function (event) {
+        encodeEvent(KEY_MAP[this.id],false);
+        console.log(KEY_MAP[this.id]);
+        console.log(event);
+    })
 });
 
 
