@@ -107,7 +107,7 @@ function encodeEvent(keyCode, pressed) {
 function sendData(data) {
     $.ajax({
         type: "PUT",
-        url: "/send",
+        url: "send",
         contentType: "application/json",
         data: JSON.stringify(data)
     });
