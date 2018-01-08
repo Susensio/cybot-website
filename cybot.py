@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, request
-from smbus import SMBus
+from spidev import SpiDev
 
 app = Flask(__name__)
 
-bus = SMBus(1)
-ADDRESS = 8
+spi = SpiDev()
+spi.open(0,0)
+spi.max_speed_hz = 61000
+
 
 LINEAR_MAX = 15   # mm/s
 ANGULAR_MAX = 5   # rad/s
@@ -22,12 +24,13 @@ def send():
     if request.method == 'PUT':
         body = request.get_json()
         app.logger.debug(body)
-        send_i2c(*encode(body))
+        send_spi(encode(body))
         return "Done"
 
 
 def encode(data):
     # LEDs encoded in two bits: bx00
+    encoded = []
     if data['type'] == 'led':
         cmd = "L"
         val = [(data['left'] << 1) + data['right']]
@@ -36,15 +39,30 @@ def encode(data):
     elif data['type'] == 'velocity':
         cmd = "M"
         modifier = data['modifier']
-        linear = modifier * data['linear'] * LINEAR_MAX
-        angular = modifier * data['angular'] * ANGULAR_MAX
+        linear = modifier * data['linear']
+        angular = modifier * data['angular']
         val = [*split_int(linear), *split_int(angular)]
 
-    return cmd, val
+    app.logger.debug(val)
+
+    encoded.append(ord(cmd))
+    encoded.extend(val)
+    return encoded
 
 
-def send_i2c(cmd, val):
-    bus.write_i2c_block_data(ADDRESS, ord(cmd), val)
+def send_spi(data):
+    parity_byte = sum(data)%256
+
+    spi.writebytes([*data, parity_byte])
+
+
+def to_char(num):
+    num = int(num)
+    if num > 127:
+        num = 127
+    if num < -128:
+        num = -128
+    return num
 
 
 def split_int(num):
