@@ -5,8 +5,8 @@ from spidev import SpiDev
 app = Flask(__name__)
 
 spi = SpiDev()
-spi.open(0,0)
-spi.max_speed_hz = 61000
+spi.open(0, 0)
+spi.max_speed_hz = 15200
 
 
 LINEAR_MAX = 15   # mm/s
@@ -51,7 +51,7 @@ def encode(data):
 
 
 def send_spi(data):
-    parity_byte = sum(data)%256
+    parity_byte = sum(data) % 256
 
     spi.writebytes([*data, parity_byte])
 
